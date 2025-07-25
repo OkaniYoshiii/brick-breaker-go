@@ -4,56 +4,34 @@ import (
 	"image/color"
 	"log"
 
+	"github.com/OkaniYoshiii/brick-breaker-go/game"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
-type Pallet struct {
-	*ebiten.Image
-	*ebiten.DrawImageOptions
+var (
+	aspectRatio  = 16.0 / 9.0
+	ScreenWidth  = 1920
+	ScreenHeight = int(float64(ScreenWidth) / aspectRatio)
 
-	Speed int
-}
-
-type Ball struct {
-	*ebiten.Image
-	*ebiten.DrawImageOptions
-
-	Speed int
-}
-
-var pallet Pallet
-var ball Ball
+	pallet game.Pallet
+	ball   game.Ball
+)
 
 func init() {
 	// Pallet creation
-	pallet = func() Pallet {
-		pallet := Pallet{
-			Image:            ebiten.NewImage(120, 25),
-			DrawImageOptions: &ebiten.DrawImageOptions{},
-			Speed:            5,
-		}
+	pallet = func() game.Pallet {
+		pallet := game.NewPallet(150, 25, 5, color.RGBA{255, 0, 0, 255})
 
-		pallet.Fill(color.RGBA{255, 0, 0, 255})
 		pallet.GeoM.Translate(150, 150)
 
 		return pallet
 	}()
 
 	// Ball creation
-	ball = func() Ball {
-		size := 25
-		posX := 125
-		posY := 125
+	ball = func() game.Ball {
+		ball := game.NewBall(10, 5, color.RGBA{0, 0, 0, 255})
 
-		ball := Ball{
-			Image:            ebiten.NewImage(size, size),
-			DrawImageOptions: &ebiten.DrawImageOptions{},
-			Speed:            5,
-		}
-
-		ball.GeoM.Translate(float64(posX), float64(posY))
-		vector.DrawFilledCircle(ball.Image, float32(size/2), float32(size/2), float32(size/2), color.RGBA{0, 0, 0, 255}, true)
+		ball.GeoM.Translate(150, 250)
 
 		return ball
 	}()
@@ -81,7 +59,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return outsideWidth, outsideHeight
+	return ScreenWidth, ScreenHeight
 }
 
 func main() {
