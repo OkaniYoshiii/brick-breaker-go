@@ -8,17 +8,18 @@ import (
 )
 
 type Pallet struct {
-	*ebiten.Image
-	*ebiten.DrawImageOptions
+	GameObject
 
 	Speed int
 }
 
 func NewPallet(width, height, speed int, color color.Color) Pallet {
 	pallet := Pallet{
-		Image:            ebiten.NewImage(width, height),
-		DrawImageOptions: &ebiten.DrawImageOptions{},
-		Speed:            5,
+		GameObject: GameObject{
+			Image:            ebiten.NewImage(width, height),
+			DrawImageOptions: &ebiten.DrawImageOptions{},
+		},
+		Speed: 5,
 	}
 
 	vector.DrawFilledRect(
@@ -32,4 +33,12 @@ func NewPallet(width, height, speed int, color color.Color) Pallet {
 	)
 
 	return pallet
+}
+
+func (p *Pallet) Width() int {
+	return p.Bounds().Size().X
+}
+
+func (p *Pallet) Height() int {
+	return p.Bounds().Size().Y
 }

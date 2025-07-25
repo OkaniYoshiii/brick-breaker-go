@@ -20,18 +20,24 @@ var (
 func init() {
 	// Pallet creation
 	pallet = func() game.Pallet {
-		pallet := game.NewPallet(150, 25, 5, color.RGBA{255, 0, 0, 255})
+		width := 150
+		height := 25
+		pallet := game.NewPallet(width, height, 5, color.RGBA{255, 0, 0, 255})
 
-		pallet.GeoM.Translate(150, 150)
+		pallet.GeoM.Translate(float64(ScreenWidth)/2-float64(width)/2, float64(ScreenHeight-height-15))
 
 		return pallet
 	}()
 
 	// Ball creation
 	ball = func() game.Ball {
-		ball := game.NewBall(10, 5, color.RGBA{0, 0, 0, 255})
+		radius := 10
+		size := radius * 2
+		speed := 5
 
-		ball.GeoM.Translate(150, 250)
+		ball := game.NewBall(radius, speed, color.RGBA{0, 0, 0, 255})
+
+		ball.GeoM.Translate(float64(ScreenWidth/2-radius), pallet.Y()-float64(size)-10)
 
 		return ball
 	}()
@@ -63,8 +69,11 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func main() {
-	ebiten.SetWindowSize(ebiten.Monitor().Size())
+	width := 700
+	height := int(float64(width) / aspectRatio)
+	ebiten.SetWindowSize(width, height)
 	ebiten.SetWindowTitle("Brick Breaker Go")
+	ebiten.SetWindowPosition(0, 0)
 	if err := ebiten.RunGame(&Game{}); err != nil {
 		log.Fatal(err)
 	}

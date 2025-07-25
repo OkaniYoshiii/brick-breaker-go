@@ -8,8 +8,7 @@ import (
 )
 
 type Ball struct {
-	*ebiten.Image
-	*ebiten.DrawImageOptions
+	GameObject
 
 	Speed  int
 	Radius int
@@ -19,9 +18,11 @@ func NewBall(radius, speed int, color color.Color) Ball {
 	size := radius * 2
 
 	ball := Ball{
-		Image:            ebiten.NewImage(size, size),
-		DrawImageOptions: &ebiten.DrawImageOptions{},
-		Speed:            speed,
+		GameObject: GameObject{
+			Image:            ebiten.NewImage(size, size),
+			DrawImageOptions: &ebiten.DrawImageOptions{},
+		},
+		Speed: speed,
 	}
 
 	vector.DrawFilledCircle(
@@ -34,12 +35,4 @@ func NewBall(radius, speed int, color color.Color) Ball {
 	)
 
 	return ball
-}
-
-func (b *Ball) X() float64 {
-	return b.GeoM.Element(0, 2)
-}
-
-func (b *Ball) Y() float64 {
-	return b.GeoM.Element(1, 2)
 }
