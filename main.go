@@ -3,10 +3,9 @@ package main
 import (
 	"image/color"
 	"log"
-	"math"
-	"math/rand"
 
 	"github.com/OkaniYoshiii/brick-breaker-go/game"
+	"github.com/OkaniYoshiii/brick-breaker-go/utils"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -53,11 +52,10 @@ func (g *Game) Update() error {
 	if !g.IsStarted && ebiten.IsKeyPressed(ebiten.KeySpace) {
 		g.IsStarted = true
 
-		angle := rand.Float64() * math.Pi
-		distance := float64(ball.Speed) * 5
+		dirX, dirY := utils.RandDirection(180)
 
-		ball.Direction.X = math.Cos(angle) * distance
-		ball.Direction.Y = -math.Sin(angle) * distance
+		ball.Direction.X = dirX
+		ball.Direction.Y = dirY
 	}
 
 	if !g.IsStarted {
@@ -72,7 +70,7 @@ func (g *Game) Update() error {
 		pallet.GeoM.Translate(float64(pallet.Speed), 0)
 	}
 
-	ball.GeoM.Translate(ball.Direction.X, ball.Direction.Y)
+	ball.GeoM.Translate(ball.Direction.X*float64(ball.Speed), ball.Direction.Y*float64(ball.Speed))
 
 	return nil
 }
