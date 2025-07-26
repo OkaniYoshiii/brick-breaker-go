@@ -3,6 +3,8 @@ package main
 import (
 	"image/color"
 	"log"
+	"math"
+	"math/rand"
 
 	"github.com/OkaniYoshiii/brick-breaker-go/game"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -43,9 +45,25 @@ func init() {
 	}()
 }
 
-type Game struct{}
+type Game struct {
+	IsStarted bool
+}
 
 func (g *Game) Update() error {
+	if !g.IsStarted && ebiten.IsKeyPressed(ebiten.KeySpace) {
+		g.IsStarted = true
+
+		angle := rand.Float64() * math.Pi
+		distance := float64(ball.Speed) * 5
+
+		ball.Direction.X = math.Cos(angle) * distance
+		ball.Direction.Y = -math.Sin(angle) * distance
+	}
+
+	if !g.IsStarted {
+		return nil
+	}
+
 	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
 		pallet.GeoM.Translate(-float64(pallet.Speed), 0)
 	}
@@ -53,6 +71,8 @@ func (g *Game) Update() error {
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
 		pallet.GeoM.Translate(float64(pallet.Speed), 0)
 	}
+
+	ball.GeoM.Translate(ball.Direction.X, ball.Direction.Y)
 
 	return nil
 }

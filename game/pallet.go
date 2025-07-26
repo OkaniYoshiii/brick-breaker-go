@@ -10,7 +10,8 @@ import (
 type Pallet struct {
 	GameObject
 
-	Speed int
+	Direction Vector
+	Speed     int
 }
 
 func NewPallet(width, height, speed int, color color.Color) Pallet {

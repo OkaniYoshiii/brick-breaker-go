@@ -2,6 +2,11 @@ package game
 
 import "github.com/hajimehoshi/ebiten/v2"
 
+type Vector struct {
+	X float64
+	Y float64
+}
+
 type GameObject struct {
 	*ebiten.Image
 	*ebiten.DrawImageOptions
