@@ -9,20 +9,22 @@ import (
 )
 
 type Ball struct {
-	GameObject
+	Circle
 
 	Direction Vector
 	Speed     int
-	Radius    int
 }
 
 func NewBall(radius, speed int, color color.Color) Ball {
 	size := radius * 2
 
 	ball := Ball{
-		GameObject: GameObject{
-			Image:            ebiten.NewImage(size, size),
-			DrawImageOptions: &ebiten.DrawImageOptions{},
+		Circle: Circle{
+			GameObject: GameObject{
+				Image:            ebiten.NewImage(size, size),
+				DrawImageOptions: &ebiten.DrawImageOptions{},
+			},
+			Radius: radius,
 		},
 		Speed: speed,
 	}

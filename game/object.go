@@ -12,10 +12,10 @@ type GameObject struct {
 	*ebiten.DrawImageOptions
 }
 
-func (gO *GameObject) X() float64 {
+func (gO *GameObject) ImgX() float64 {
 	return gO.GeoM.Element(0, 2)
 }
 
-func (gO *GameObject) Y() float64 {
+func (gO *GameObject) ImgY() float64 {
 	return gO.GeoM.Element(1, 2)
 }

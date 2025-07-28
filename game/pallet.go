@@ -8,7 +8,7 @@ import (
 )
 
 type Pallet struct {
-	GameObject
+	Rectangle
 
 	Direction Vector
 	Speed     int
@@ -16,9 +16,11 @@ type Pallet struct {
 
 func NewPallet(width, height, speed int, color color.Color) Pallet {
 	pallet := Pallet{
-		GameObject: GameObject{
-			Image:            ebiten.NewImage(width, height),
-			DrawImageOptions: &ebiten.DrawImageOptions{},
+		Rectangle: Rectangle{
+			GameObject: GameObject{
+				Image:            ebiten.NewImage(width, height),
+				DrawImageOptions: &ebiten.DrawImageOptions{},
+			},
 		},
 		Speed: 5,
 	}
