@@ -1,6 +1,9 @@
 package game
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"github.com/OkaniYoshiii/brick-breaker-go/utils"
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 type Vector struct {
 	X float64
@@ -13,9 +16,9 @@ type GameObject struct {
 }
 
 func (gO *GameObject) ImgX() float64 {
-	return gO.GeoM.Element(0, 2)
+	return utils.ImgX(gO.DrawImageOptions)
 }
 
 func (gO *GameObject) ImgY() float64 {
-	return gO.GeoM.Element(1, 2)
+	return utils.ImgY(gO.DrawImageOptions)
 }
