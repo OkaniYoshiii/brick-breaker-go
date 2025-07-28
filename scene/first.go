@@ -11,7 +11,7 @@ import (
 
 func First() *FirstLevel {
 	scene := func() *FirstLevel {
-		width, height := 500, 500
+		width, height := 1000, 1000
 
 		lvl := &FirstLevel{
 			Image:            ebiten.NewImage(width, height),
@@ -21,13 +21,29 @@ func First() *FirstLevel {
 		return lvl
 	}()
 
+	scene.bounds = func() Bounds {
+		width, height := 500, 500
+
+		bounds := Bounds{
+			Image:            ebiten.NewImage(width, height),
+			DrawImageOptions: &ebiten.DrawImageOptions{},
+		}
+
+		tx := float64(scene.Bounds().Dx()/2 - width/2)
+		ty := float64(scene.Bounds().Dy()/2 - height/2)
+
+		bounds.GeoM.Translate(tx, ty)
+
+		return bounds
+	}()
+
 	// Pallet creation
 	scene.pallet = func() game.Pallet {
 		width := 150
 		height := 25
 		pallet := game.NewPallet(width, height, 5, color.RGBA{255, 0, 0, 255})
 
-		pallet.GeoM.Translate(float64(scene.Bounds().Dx())/2-float64(width)/2, float64(scene.Bounds().Dy()-height-15))
+		pallet.GeoM.Translate(float64(scene.bounds.Bounds().Dx())/2-float64(width)/2, float64(scene.bounds.Bounds().Dy()-height-15))
 
 		return pallet
 	}()
@@ -40,12 +56,17 @@ func First() *FirstLevel {
 
 		ball := game.NewBall(radius, speed, color.RGBA{0, 0, 0, 255})
 
-		ball.GeoM.Translate(float64(scene.Bounds().Dx()/2-radius), scene.pallet.ImgY()-float64(size)-10)
+		ball.GeoM.Translate(float64(scene.bounds.Bounds().Dx()/2-radius), scene.pallet.ImgY()-float64(size)-10)
 
 		return ball
 	}()
 
 	return scene
+}
+
+type Bounds struct {
+	*ebiten.Image
+	*ebiten.DrawImageOptions
 }
 
 type FirstLevel struct {
@@ -54,6 +75,7 @@ type FirstLevel struct {
 
 	IsStarted bool
 
+	bounds Bounds
 	ball   game.Ball
 	pallet game.Pallet
 }
@@ -82,25 +104,20 @@ func (lvl *FirstLevel) Update() error {
 
 	lvl.ball.GeoM.Translate(lvl.ball.Direction.X*float64(lvl.ball.Speed), lvl.ball.Direction.Y*float64(lvl.ball.Speed))
 
-	lvlGameObj := struct {
-		*ebiten.Image
-		*ebiten.DrawImageOptions
-	}{
-		lvl.Image,
-		lvl.DrawImageOptions,
-	}
-
-	fmt.Println(lvl.ball.IsCollidingWithImg(lvlGameObj))
+	fmt.Println(lvl.ball.IsCollidingWithImg(game.GameObject(lvl.bounds)))
 
 	return nil
 }
 
 func (lvl *FirstLevel) Draw(screen *ebiten.Image) {
-	screen.Clear()
 	screen.Fill(color.RGBA{0, 255, 0, 255})
+	lvl.Fill(color.RGBA{100, 255, 100, 255})
+	lvl.bounds.Fill(color.RGBA{155, 255, 155, 255})
 
-	screen.DrawImage(lvl.pallet.Image, lvl.pallet.DrawImageOptions)
-	screen.DrawImage(lvl.ball.Image, lvl.ball.DrawImageOptions)
+	lvl.bounds.DrawImage(lvl.pallet.Image, lvl.pallet.DrawImageOptions)
+	lvl.bounds.DrawImage(lvl.ball.Image, lvl.ball.DrawImageOptions)
+
+	lvl.DrawImage(lvl.bounds.Image, lvl.bounds.DrawImageOptions)
 
 	screen.DrawImage(lvl.Image, lvl.DrawImageOptions)
 }
