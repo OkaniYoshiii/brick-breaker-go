@@ -111,26 +111,7 @@ func (lvl *FirstLevel) Update() error {
 
 	lvl.ball.GeoM.Translate(lvl.ball.Direction.X*float64(lvl.ball.Speed), lvl.ball.Direction.Y*float64(lvl.ball.Speed))
 
-	// Ball bounce inside level boundaries
-	// Left collision
-	if lvl.ball.X()-float64(lvl.ball.Radius) < 0 {
-		lvl.ball.Direction.X = 1
-	}
-
-	// Right collision
-	if lvl.ball.X()+float64(lvl.ball.Radius) > float64(lvl.bounds.Bounds().Dx()) {
-		lvl.ball.Direction.X = -1
-	}
-
-	// Top collision
-	if lvl.ball.Y()-float64(lvl.ball.Radius) < 0 {
-		lvl.ball.Direction.Y = 1
-	}
-
-	// Bottom collision
-	if lvl.ball.Y()+float64(lvl.ball.Radius) > float64(lvl.bounds.Bounds().Dy()) {
-		lvl.ball.Direction.Y = -1
-	}
+	lvl.ball.BounceInsideImg(lvl.bounds.Image)
 
 	return nil
 }
