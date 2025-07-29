@@ -3,7 +3,7 @@ package scene
 import (
 	"image/color"
 
-	"github.com/OkaniYoshiii/brick-breaker-go/game"
+	"github.com/OkaniYoshiii/brick-breaker-go/entities"
 	"github.com/OkaniYoshiii/brick-breaker-go/utils"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -37,10 +37,10 @@ func First() *FirstLevel {
 	}()
 
 	// Pallet creation
-	scene.pallet = func() game.Pallet {
+	scene.pallet = func() entities.Pallet {
 		width := 150
 		height := 25
-		pallet := game.NewPallet(width, height, 5, color.RGBA{255, 0, 0, 255})
+		pallet := entities.NewPallet(width, height, 5, color.RGBA{255, 0, 0, 255})
 
 		pallet.GeoM.Translate(float64(scene.bounds.Bounds().Dx())/2-float64(width)/2, float64(scene.bounds.Bounds().Dy()-height-15))
 
@@ -48,12 +48,12 @@ func First() *FirstLevel {
 	}()
 
 	// Ball creation
-	scene.ball = func() game.Ball {
+	scene.ball = func() entities.Ball {
 		radius := 10
 		size := radius * 2
 		speed := 5
 
-		ball := game.NewBall(radius, speed, color.RGBA{0, 0, 0, 255})
+		ball := entities.NewBall(radius, speed, color.RGBA{0, 0, 0, 255})
 
 		ball.GeoM.Translate(float64(scene.bounds.Bounds().Dx()/2-radius), scene.pallet.ImgY()-float64(size)-10)
 
@@ -83,8 +83,8 @@ type FirstLevel struct {
 	IsStarted bool
 
 	bounds Bounds
-	ball   game.Ball
-	pallet game.Pallet
+	ball   entities.Ball
+	pallet entities.Pallet
 }
 
 func (lvl *FirstLevel) Update() error {
@@ -121,10 +121,8 @@ func (lvl *FirstLevel) Draw(screen *ebiten.Image) {
 	lvl.Fill(color.RGBA{100, 255, 100, 255})
 	lvl.bounds.Fill(color.RGBA{155, 255, 155, 255})
 
-	lvl.bounds.DrawImage(lvl.pallet.Image, lvl.pallet.DrawImageOptions)
-	lvl.bounds.DrawImage(lvl.ball.Image, lvl.ball.DrawImageOptions)
-
-	lvl.DrawImage(lvl.bounds.Image, lvl.bounds.DrawImageOptions)
-
 	screen.DrawImage(lvl.Image, lvl.DrawImageOptions)
+	screen.DrawImage(lvl.bounds.Image, lvl.bounds.DrawImageOptions)
+	screen.DrawImage(lvl.pallet.Image, lvl.pallet.DrawImageOptions)
+	screen.DrawImage(lvl.ball.Image, lvl.ball.DrawImageOptions)
 }
