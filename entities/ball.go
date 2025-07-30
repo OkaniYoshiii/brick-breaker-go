@@ -57,24 +57,24 @@ func (b *Ball) Rotate(angleInDeg int) {
 	b.GeoM.Translate(oldX+halfW, oldY+halfH)
 }
 
-func (b *Ball) BounceInsideImg(img *ebiten.Image) {
+func (b *Ball) BounceInside(gameObject GameObject) {
 	// Left collision
-	if b.X()-float64(b.Radius) < 0 {
+	if b.X()-float64(b.Radius) < gameObject.ImgX() {
 		b.Direction.X *= -1
 	}
 
 	// Right collision
-	if b.X()+float64(b.Radius) > float64(img.Bounds().Dx()) {
+	if b.X()+float64(b.Radius) > gameObject.ImgX()+float64(gameObject.Bounds().Dx()) {
 		b.Direction.X *= -1
 	}
 
 	// Top collision
-	if b.Y()-float64(b.Radius) < 0 {
+	if b.Y()-float64(b.Radius) < gameObject.ImgY() {
 		b.Direction.Y *= -1
 	}
 
 	// Bottom collision
-	if b.Y()+float64(b.Radius) > float64(img.Bounds().Dy()) {
+	if b.Y()+float64(b.Radius) > gameObject.ImgY()+float64(gameObject.Bounds().Dy()) {
 		b.Direction.Y *= -1
 	}
 }

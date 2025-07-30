@@ -7,10 +7,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-var (
-	aspectRatio  = 16.0 / 9.0
-	ScreenWidth  = 1920
-	ScreenHeight = int(float64(ScreenWidth) / aspectRatio)
+const (
+	// Pixel perfect dimensions
+	LogicalWidth  = 1280
+	LogicalHeight = 720
 )
 
 type Game struct {
@@ -23,17 +23,17 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	g.Scene.Draw(screen)
-	// screen.DrawImage(g.Scene.Image, nil)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return ScreenWidth, ScreenHeight
+	return LogicalWidth, LogicalHeight
 }
 
 func main() {
 	width := 700
-	height := int(float64(width) / aspectRatio)
+	height := int(float64(width) / float64(16.0/9.0))
 
+	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowSize(width, height)
 	ebiten.SetWindowTitle("Brick Breaker Go")
 	ebiten.SetWindowPosition(0, 0)
