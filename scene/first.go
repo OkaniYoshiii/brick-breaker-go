@@ -54,9 +54,10 @@ func (lvl *FirstLevel) Update() error {
 		lvl.pallet.GeoM.Translate(float64(lvl.pallet.Speed), 0)
 	}
 
-	lvl.ball.GeoM.Translate(lvl.ball.Direction.X*float64(lvl.ball.Speed), lvl.ball.Direction.Y*float64(lvl.ball.Speed))
-
 	lvl.ball.BounceInside(entities.GameObject(lvl.PlayArea))
+	lvl.ball.BounceOn(lvl.pallet.GameObject)
+
+	lvl.ball.GeoM.Translate(lvl.ball.Direction.X*float64(lvl.ball.Speed), lvl.ball.Direction.Y*float64(lvl.ball.Speed))
 
 	return nil
 }
@@ -102,12 +103,12 @@ func First() *FirstLevel {
 
 	// Pallet creation
 	scene.pallet = func() entities.Pallet {
-		width := 125
+		width := 300
 		height := width / 6
 		pallet := entities.NewPallet(width, height, 5, color.RGBA{255, 0, 0, 255})
 
-		tx := float64(scene.PlayArea.Bounds().Dx())/2 - float64(width)/2
-		ty := float64(scene.PlayArea.Bounds().Dy() - height - 15)
+		tx := float64(scene.PlayArea.ImgX()+float64(scene.PlayArea.Bounds().Dx()))/2 - float64(width)/2
+		ty := float64(scene.PlayArea.ImgY() + float64(scene.PlayArea.Bounds().Dy()-height-15))
 
 		pallet.GeoM.Translate(tx, ty)
 
@@ -116,9 +117,9 @@ func First() *FirstLevel {
 
 	// Ball creation
 	scene.ball = func() entities.Ball {
-		radius := 9
+		radius := 15
 		size := radius * 2
-		speed := 5
+		speed := 9
 
 		ball := entities.NewBall(radius, speed, color.RGBA{0, 0, 0, 255})
 

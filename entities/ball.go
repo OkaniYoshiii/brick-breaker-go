@@ -2,6 +2,9 @@ package entities
 
 import (
 	"image/color"
+	"log"
+	"math"
+	"slices"
 
 	"github.com/OkaniYoshiii/brick-breaker-go/utils"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -77,4 +80,63 @@ func (b *Ball) BounceInside(gameObject GameObject) {
 	if b.Y()+float64(b.Radius) > gameObject.ImgY()+float64(gameObject.Bounds().Dy()) {
 		b.Direction.Y *= -1
 	}
+}
+
+func (b *Ball) BounceOn(gameObject GameObject) {
+	hitEdges := b.CollisionEdges(gameObject)
+
+	if slices.Contains(hitEdges, "left") {
+		b.Direction.X = math.Abs(b.Direction.X) * -1.0
+	}
+
+	if slices.Contains(hitEdges, "right") {
+		b.Direction.X = math.Abs(b.Direction.X)
+	}
+
+	if slices.Contains(hitEdges, "top") {
+		b.Direction.Y = math.Abs(b.Direction.Y) * -1.0
+	}
+
+	if slices.Contains(hitEdges, "bottom") {
+		b.Direction.Y = math.Abs(b.Direction.Y)
+	}
+}
+
+func (b *Ball) CollisionEdges(gameObject GameObject) []string {
+	hitEdges := []string{"none", "none"}
+
+	if !b.CollidesWith(gameObject) {
+		return hitEdges
+	}
+
+	if b.X()-float64(b.Radius) <= gameObject.ImgX() {
+		hitEdges = append(hitEdges, "left")
+	}
+
+	if b.X()+float64(b.Radius) >= gameObject.ImgX()+float64(gameObject.Bounds().Dx()) {
+		hitEdges = append(hitEdges, "right")
+	}
+
+	if b.Y()-float64(b.Radius) <= gameObject.ImgY() {
+		hitEdges = append(hitEdges, "top")
+	}
+
+	if b.Y()+float64(b.Radius) >= gameObject.ImgY()+float64(gameObject.Bounds().Dy()) {
+		hitEdges = append(hitEdges, "bottom")
+	}
+
+	return hitEdges
+}
+
+func (b *Ball) CollidesWith(gameObject GameObject) bool {
+	isBetweenRightAndLeftEdge := b.X()+float64(b.Radius) > gameObject.ImgX() && b.X()-float64(b.Radius) < gameObject.ImgX()+float64(gameObject.Bounds().Dx())
+	isBetweenTopAndBottomEdge := b.Y()+float64(b.Radius) > gameObject.ImgY() && b.Y()-float64(b.Radius) < gameObject.ImgY()+float64(gameObject.Bounds().Dy())
+
+	log.Println(isBetweenTopAndBottomEdge)
+
+	if isBetweenRightAndLeftEdge && isBetweenTopAndBottomEdge {
+		return true
+	}
+
+	return false
 }
